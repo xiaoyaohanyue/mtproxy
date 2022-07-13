@@ -27,7 +27,8 @@ The image integrates nginx and mtproxy+tls to disguise traffic, and uses a white
  ```bash
 secret=$(head -c 16 /dev/urandom | xxd -ps)
 domain="cloudflare.com"
-docker run --name nginx-mtproxy -d -e secret="$secret" -e domain="$domain" -p 8080:80 -p 8443:443 xiaoyaohanyue/nginx-mtproxy:latest
+tag="12345678901234567890121231231231"
+docker run --name nginx-mtproxy -d -e tag="$tag" -e secret="$secret" -e domain="$domain" -p 8080:80 -p 8443:443 xiaoyaohanyue/nginx-mtproxy:latest
  ```
 镜像默认开启了 IP 段白名单，如果你不需要可以取消：
 
@@ -35,11 +36,27 @@ docker run --name nginx-mtproxy -d -e secret="$secret" -e domain="$domain" -p 80
 docker run --name nginx-mtproxy -d -e secret="$secret" -e domain="$domain" -e ip_white_list="IP" -p 8080:80 -p 8443:443 xiaoyaohanyue/nginx-mtproxy:latest
 ```
 
-更多使用请参考： https://hub.docker.com/r/xiaoyaohanyue/nginx-mtproxy
+```ip_white_list``` 可选参数为:
+
+```IP``` 允许单个 IP 访问
+
+```IPSEG``` 允许 IP 段访问
+
+```OFF ``` 允许所有 IP 访问
 
 
 
 ## 使用方式
+
+whitelist
+
+默认所有访客都不被允许连接，只有当访客尝试访问了下面的地址，才会将访客IP加入到白名单中。
+
+IP 和端口取决于你 docker 的配置：
+
+```
+http://ip/add.php
+```
 
 运行服务
 
