@@ -176,10 +176,6 @@ config_mtp(){
   echo -e "[\033[33m状态码：${http_code}错误\033[0m] 域名无法访问,请重新输入或更换域名!"
   done
   
-   # config info
-  public_ip=$(curl -s https://api.ip.sb/ip -A Mozilla --ipv4)
-  [ -z "$public_ip" ] && public_ip=$(curl -s ipinfo.io/ip -A Mozilla --ipv4)
-  secret=$(head -c 16 /dev/urandom | xxd -ps)
 
   # proxy tag
   while true
@@ -203,6 +199,11 @@ config_mtp(){
   echo -e "[\033[33m错误\033[0m] TAG格式不正确!"
   done
 
+# config info
+  public_ip=$(curl -s ip.sb)
+  [ -z "$public_ip" ] && public_ip=$(curl -s ip.sb)
+  secret=$(head -c 16 /dev/urandom | xxd -ps)
+  
   curl -s https://core.telegram.org/getProxySecret -o proxy-secret
   curl -s https://core.telegram.org/getProxyConfig -o proxy-multi.conf
   cat >./mtp_config <<EOF
@@ -230,8 +231,8 @@ info_mtp(){
   status_mtp
   if [ $? == 1 ];then
     source ./mtp_config
-    public_ip=$(curl -s https://api.ip.sb/ip -A Mozilla --ipv4)
-    [ -z "$public_ip" ] && public_ip=$(curl -s ipinfo.io/ip -A Mozilla --ipv4)
+    public_ip=$(curl -s ip.sb)
+    [ -z "$public_ip" ] && public_ip=$(curl -s ip.sb)
     domain_hex=$(xxd -pu <<< $domain | sed 's/0a//g')
     client_secret="ee${secret}${domain_hex}"
     echo -e "TMProxy+TLS代理: \033[32m运行中\033[0m"
@@ -255,8 +256,8 @@ run_mtp(){
     curl -s https://core.telegram.org/getProxyConfig -o proxy-multi.conf
     source ./mtp_config
     nat_ip=$(echo $(ip a | grep inet | grep -v 127.0.0.1 | grep -v inet6 | awk '{print $2}' | cut -d "/" -f1 |awk 'NR==1 {print $1}'))
-    public_ip=`curl -s https://api.ip.sb/ip -A Mozilla --ipv4`
-    [ -z "$public_ip" ] && public_ip=$(curl -s ipinfo.io/ip -A Mozilla --ipv4)
+    public_ip=`curl -s ip.sb`
+    [ -z "$public_ip" ] && public_ip=$(curl -s ip.sb)
     nat_info=""
     if [[ $nat_ip != $public_ip ]];then
       nat_info="--nat-info ${nat_ip}:${public_ip}"
@@ -275,8 +276,8 @@ debug_mtp(){
   cd $WORKDIR
   source ./mtp_config
   nat_ip=$(echo $(ip a | grep inet | grep -v 127.0.0.1 | grep -v inet6 | awk '{print $2}' | cut -d "/" -f1 |awk 'NR==1 {print $1}'))
-  public_ip=`curl -s https://api.ip.sb/ip -A Mozilla --ipv4`
-  [ -z "$public_ip" ] && public_ip=$(curl -s ipinfo.io/ip -A Mozilla --ipv4)
+  public_ip=`curl -s ip.sb`
+  [ -z "$public_ip" ] && public_ip=$(curl -s ip.sb)
   nat_info=""
   if [[ $nat_ip != $public_ip ]];then
       nat_info="--nat-info ${nat_ip}:${public_ip}"
