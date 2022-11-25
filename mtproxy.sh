@@ -157,25 +157,12 @@ config_mtp(){
   echo -e "[\033[33m错误\033[0m] 请重新输入一个管理端口 [1-65535]"
   done
 
-  # domain
-  while true
-  do
-  default_domain="azure.microsoft.com"
-  echo -e "请输入一个需要伪装的域名："
-  read -p "(默认域名: ${default_domain}):" input_domain
-  [ -z "${input_domain}" ] && input_domain=${default_domain}
-  http_code=$(curl -I -m 10 -o /dev/null -s -w %{http_code} $input_domain)
-  if [ $http_code -eq "200" ] || [ $http_code -eq "302" ] || [ $http_code -eq "301" ]; then
-    echo
-    echo "---------------------------"
-    echo "伪装域名 = ${input_domain}"
-    echo "---------------------------"
-    echo
-    break
-  fi
-  echo -e "[\033[33m状态码：${http_code}错误\033[0m] 域名无法访问,请重新输入或更换域名!"
-  done
   
+  
+  # config info
+  public_ip=$(curl -s ip.sb)
+  [ -z "$public_ip" ] && public_ip=$(curl -s ip.sb)
+  secret=$(head -c 16 /dev/urandom | xxd -ps)
 
   # proxy tag
   while true
@@ -199,10 +186,24 @@ config_mtp(){
   echo -e "[\033[33m错误\033[0m] TAG格式不正确!"
   done
 
-# config info
-  public_ip=$(curl -s ip.sb)
-  [ -z "$public_ip" ] && public_ip=$(curl -s ip.sb)
-  secret=$(head -c 16 /dev/urandom | xxd -ps)
+  # domain
+  while true
+  do
+  default_domain="azure.microsoft.com"
+  echo -e "请输入一个需要伪装的域名："
+  read -p "(默认域名: ${default_domain}):" input_domain
+  [ -z "${input_domain}" ] && input_domain=${default_domain}
+  http_code=$(curl -I -m 10 -o /dev/null -s -w %{http_code} $input_domain)
+  if [ $http_code -eq "200" ] || [ $http_code -eq "302" ] || [ $http_code -eq "301" ]; then
+    echo
+    echo "---------------------------"
+    echo "伪装域名 = ${input_domain}"
+    echo "---------------------------"
+    echo
+    break
+  fi
+  echo -e "[\033[33m状态码：${http_code}错误\033[0m] 域名无法访问,请重新输入或更换域名!"
+  done
   
   curl -s https://core.telegram.org/getProxySecret -o proxy-secret
   curl -s https://core.telegram.org/getProxyConfig -o proxy-multi.conf
