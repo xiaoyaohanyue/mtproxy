@@ -26,8 +26,8 @@ The image integrates nginx and mtproxy+tls to disguise traffic, and uses a white
 
  ```bash
 secret=$(head -c 16 /dev/urandom | xxd -ps)
-domain="cloudflare.com"
-tag="12345678901234567890121231231231"
+domain="azure.microsoft.com"
+tag="d93f6793f50ee70dc6a70129dc31b781"
 docker run --name nginx-mtproxy -d -e tag="$tag" -e secret="$secret" -e domain="$domain" -p 8080:80 -p 8443:443 xiaoyaohanyue/nginx-mtproxy:latest
  ```
 镜像默认开启了 IP 段白名单，如果你不需要可以取消：
