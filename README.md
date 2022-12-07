@@ -25,6 +25,8 @@ The image integrates nginx and mtproxy+tls to disguise traffic, and uses a white
 该镜像集成了nginx、mtproxy+tls 实现对流量的伪装，并采用**白名单**模式来应对防火墙的检测。
 
  ```bash
+apt update && apt install curl -y
+curl -fsSL https://get.docker.com | bash
 secret=$(head -c 16 /dev/urandom | xxd -ps)
 domain="azure.microsoft.com"
 tag="d93f6793f50ee70dc6a70129dc31b781"
