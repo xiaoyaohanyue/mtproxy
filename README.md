@@ -27,6 +27,8 @@ The image integrates nginx and mtproxy+tls to disguise traffic, and uses a white
  ```bash
 apt update && apt install curl -y
 curl -fsSL https://get.docker.com | bash
+systemctl enable docker
+systemctl start docker
 secret=$(head -c 16 /dev/urandom | xxd -ps)
 domain="azure.microsoft.com"
 tag="d93f6793f50ee70dc6a70129dc31b781"
